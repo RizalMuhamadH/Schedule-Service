@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/apex/log"
@@ -29,6 +30,9 @@ func run() {
 
 func runServer() {
 	mux := http.NewServeMux()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(os.Getenv("EXCHANGE")))
+	})
 	mux.HandleFunc("/schedule/request", func(w http.ResponseWriter, r *http.Request) {
 		param := r.URL.Query()
 		if len(param) != 0 {
