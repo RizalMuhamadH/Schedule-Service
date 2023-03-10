@@ -150,8 +150,10 @@ func consume(ds <-chan amqp.Delivery) {
 				return
 			}
 			log.Infof("consume %s", string(d.Body))
-			http.Get(os.Getenv("SEND_URL") + "/" + string(d.Body))
+			resp, err := http.Get(os.Getenv("SEND_URL") + "/" + string(d.Body))
 			log.Debug(os.Getenv("SEND_URL") + "/" + string(d.Body))
+			log.Debug(resp.Status)
+			log.Debug(err.Error())
 			d.Ack(false)
 		}
 	}
