@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -150,8 +151,12 @@ func consume(ds <-chan amqp.Delivery) {
 				return
 			}
 			log.Infof("consume %s", string(d.Body))
-			resp, err := http.Get(os.Getenv("SEND_URL") + "/" + string(d.Body))
-			log.Debug(os.Getenv("SEND_URL") + "/" + string(d.Body))
+
+			var jsonMap map[string]interface{}
+			json.Unmarshal(d.Body, &jsonMap)
+
+			resp, err := http.Get(jsonMap["host"].(string) + "/api/post/schedule/" + jsonMap["id"].(string))
+			log.Debug(jsonMap["host"].(string) + "/api/post/schedule/" + jsonMap["id"].(string))
 			log.Debug(resp.Status)
 			log.Debug(resp.Proto)
 			log.Debug(resp.Request.Host)

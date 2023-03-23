@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http"
 	"os"
 	"strconv"
@@ -36,8 +37,16 @@ func runServer() {
 	mux.HandleFunc("/schedule/request", func(w http.ResponseWriter, r *http.Request) {
 		param := r.URL.Query()
 		if len(param) != 0 {
+			host := param["host"][0]
 			id := param["id"][0]
 			timestamp, err := strconv.ParseInt(param["timestamp"][0], 0, 64)
+
+			data := map[string]interface{}{
+				"id":   id,
+				"host": host,
+			}
+
+			jsonData, err := json.Marshal(data)
 
 			rmq, err := initRabbitMQ()
 			if err != nil {
@@ -45,7 +54,7 @@ func runServer() {
 			}
 			defer rmq.Shutdown()
 
-			err = rmq.PublishWithDelay("user.event.publish", []byte(id), timestamp)
+			err = rmq.PublishWithDelay("user.event.publish", []byte(jsonData), timestamp)
 			if err != nil {
 				log.Fatalf("run: failed to publish into rabbitmq: %v", err)
 			}
