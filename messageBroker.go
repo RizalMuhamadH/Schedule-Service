@@ -155,8 +155,8 @@ func consume(ds <-chan amqp.Delivery) {
 			var jsonMap map[string]interface{}
 			json.Unmarshal(d.Body, &jsonMap)
 
-			resp, err := http.Get(jsonMap["host"].(string) + "/api/post/schedule/" + jsonMap["id"].(string))
-			log.Debug(jsonMap["host"].(string) + "/api/post/schedule/" + jsonMap["id"].(string))
+			resp, err := http.Get(jsonMap["host"].(string) + "/api/post/schedule/" + jsonMap["id"].(string) + "?date=" + jsonMap["date"].(string))
+			log.Debug(jsonMap["host"].(string) + "/api/post/schedule/" + jsonMap["id"].(string) + "?date=" + jsonMap["date"].(string))
 			log.Debug(resp.Status)
 			log.Debug(resp.Proto)
 			log.Debug(resp.Request.Host)

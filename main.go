@@ -39,11 +39,13 @@ func runServer() {
 		if len(param) != 0 {
 			host := param["host"][0]
 			id := param["id"][0]
+			gdate := param["date"][0]
 			timestamp, err := strconv.ParseInt(param["timestamp"][0], 0, 64)
 
 			data := map[string]interface{}{
 				"id":   id,
 				"host": host,
+				"date": gdate,
 			}
 
 			jsonData, err := json.Marshal(data)
